@@ -1,0 +1,2 @@
+# MethodChainPattern
+Encadeamento de métodos
