@@ -5,6 +5,7 @@ namespace MethodChaining.Interfaces
 {
     public interface ICustomerService
     {
-        Result ValidateExistingCustomerAsync(Customer c);        
+        Task<Result> ValidateExistingCustomerOkAsync(Customer c);
+        Task<Result> ValidateExistingCustomerFailAsync(Customer c);
     }
 }

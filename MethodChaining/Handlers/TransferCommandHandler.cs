@@ -3,6 +3,7 @@ using MethodChaining.Interfaces;
 using MethodChaining.Models;
 using MethodChaining.Services;
 using System;
+using System.Threading.Tasks;
 
 namespace MethodChaining.Handlers
 {
@@ -12,7 +13,7 @@ namespace MethodChaining.Handlers
         private readonly IAccountService _accountService;
 
         public TransferCommandHandler(
-            ICustomerService customerService, 
+            ICustomerService customerService,
             IAccountService accountService)
         {
             _customerService = customerService;
@@ -25,21 +26,29 @@ namespace MethodChaining.Handlers
             _accountService = new AccountService();
         }
 
-        public void Handle(TransferCommand command)
+        public async Task HandleAsync(TransferCommand command)
         {
             Console.WriteLine($"Log: Start");
 
-            _customerService                
-                .ValidateExistingCustomerAsync(command.From)
-                .OnFailure(() => Console.WriteLine($"Log: Invalid Client - {command.From.Name}"))                
-                .OnSuccess(() => _accountService.IsCustomerBalanceEnough(command.From, command.Value)
-                    .OnFailure(()=> Console.WriteLine($"Log: Not enough balance! {command.From.Name}")));            
-
+            await _customerService
+                .ValidateExistingCustomerFailAsync(command.From)
+                .OnFailureAsync(() => Console.WriteLine($"Log: Invalid Client - {command.From.Name}"))
+                .OnSuccessAsync(() => _accountService.IsCustomerBalanceEnoughAsync(command.From, command.Value)
+                    .OnFailureAsync(() => Console.WriteLine($"Log: Not enough balance! {command.From.Name}")));
             //TODO:
             // Check if recipient client id valid;
             // Send Transfer Order;
             // Send emitter balance update order;
             // Notificate both if success;
+
+
+            //Exemplo de utilização de retorno no encadeamento
+            _customerService
+                .ValidateExistingCustomerOkAsync(command.From)                
+                .OnSuccessAsync(() => _accountService.GetAsync(123, 2121))
+                .OnSuccessAsync(x => Console.WriteLine(x.ToString()));
+
+
         }
     }
 }
