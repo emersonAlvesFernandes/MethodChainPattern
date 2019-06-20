@@ -7,5 +7,10 @@
         public int Number { get; set; }
 
         public double Balance { get; set; }
+
+        public override string ToString()
+        {
+            return $"Agência:{AgencyNumber}, Conta:{Number}";
+        }
     }
 }

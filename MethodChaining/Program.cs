@@ -1,6 +1,7 @@
 ﻿using MethodChaining.Commands;
 using MethodChaining.Handlers;
 using MethodChaining.Models;
+using System.Threading.Tasks;
 
 namespace MethodChaining
 {
@@ -13,8 +14,10 @@ namespace MethodChaining
                 new Customer("Chad","12345" ), 
                 1000);
 
-            new TransferCommandHandler<TransferCommand>()
-                .Handle(tc);
+            var t = new TransferCommandHandler<TransferCommand>();
+
+            //Task.Run(()=> t.HandleAsync(tc));
+            t.HandleAsync(tc).Result;
         }
     }
 }

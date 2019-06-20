@@ -26,6 +26,15 @@ namespace MethodChaining.Models
             return await func(r.Value);
         }
 
+        public static async Task OnSuccessAsync(this Task<Result> result, Action action)
+        {
+            var r = await result;
+
+            if (r.Failure)
+                action();
+        }
+
+
         public static async Task<Result> OnFailureAsync(this Task<Result> result, Action action)
         {
             var r = await result;
